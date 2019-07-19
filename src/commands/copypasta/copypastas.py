@@ -33,10 +33,14 @@ class CopyPastas:
             keymark = " ".join(keymark).split('"')[0]
             keymark = keymark[:-1]
             pasta = string.split('"')[1]
+            bits = int(string.split('"')[2])
         except IndexError:
             keymark = None
             pasta = None
-        return keymark, pasta
+            bits = None
+        if bits is None:
+            bits = 1
+        return keymark, pasta, bits
 
     def save_dict_to_file(self):
         """
@@ -67,14 +71,15 @@ class CopyPastas:
         :param string: message.or the full discord message from the user
         :return: status of the action -1 for invalid input, 0 for already present and 1 for success
         """
-        key, pasta = self.get_the_pasta(string)
+        key, pasta, bits = self.get_the_pasta(string)
         if key is None:
             return -1
         elif key in self.pasta_dict:
             return 0
         if not self.test_pasta_text(pasta):
             return -1
-        self.pasta_dict[key] = pasta
+        print(key)
+        self.pasta_dict[key] = [pasta, bits]
         return 1
 
     def remove_pasta(self, key: str):
@@ -108,3 +113,26 @@ class CopyPastas:
         elif len(pasta) < 3:
             return False
         return True
+
+    def update_to_access_bits(self):
+        for pasta in self.pasta_dict:
+            x = self.pasta_dict[pasta]
+            self.pasta_dict[pasta] = [x, 1]
+        self.save_dict_to_file()
+        print(self.pasta_dict)
+
+    def set_bits_value(self, msg):
+        try:
+            key = msg.split('|')[0][:-1]
+            bits = int(msg.split('|')[1])
+            self.pasta_dict[key][1] = bits
+            self.save_dict_to_file()
+            return True
+        except KeyError:
+            return False
+
+    def import_guild_pastas(self, filename):
+        file = open(filename, "rb")
+        dict_holder = pickle.load(file)
+        self.pasta_dict = dict_holder
+        self.save_dict_to_file()

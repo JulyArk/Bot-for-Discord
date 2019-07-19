@@ -5,7 +5,7 @@ from discord.utils import get
 
 class DiscordBotVoice(commands.Cog):
     """
-    A class that ahndles the bot interaction with voice channels
+    A class that handles the bot interaction with voice channels
     """
 
     def __init__(self, bot):
@@ -34,7 +34,7 @@ class DiscordBotVoice(commands.Cog):
     @commands.command(pass_context=True)
     async def leave(self, ctx):
         """
-        Bot leaves the channel it is in from a discord server
+        Bot leaves voice
         :param ctx: the full discord message from the user as a Context class from Discord.py
         :return: None
         """

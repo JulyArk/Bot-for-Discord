@@ -7,8 +7,8 @@ class ReactionsController:
     Controller for reactions to messages
     """
 
-    def __init__(self, client):
-        self.react_dict = BotReaction(reactions_file_path)
+    def __init__(self, client, guild):
+        self.react_dict = BotReaction(reactions_file_path + str(guild.id))
         self.client = client
 
     def add(self, string: str):

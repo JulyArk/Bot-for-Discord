@@ -73,3 +73,9 @@ class BotReaction:
             return -1
         self.keywords.pop(key)
         return 1
+
+    def import_guild_reactions(self, filename):
+        file = open(filename, "rb")
+        dict_holder = pickle.load(file)
+        self.keywords = dict_holder
+        self.save_dict_to_file()

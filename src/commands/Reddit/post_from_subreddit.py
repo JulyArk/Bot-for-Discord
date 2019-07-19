@@ -63,3 +63,26 @@ class RedditBot:
             return 0, "No results found"
         choice = random.choice(list_of_results)
         return choice.over_18, choice.url
+
+    def top_x_posts(self, sub: str, n: int):
+        """
+        Returns the first N posts from a certain subreddit
+        :param n: integer value, representing number of posts.
+        :param sub: the subreddit, string
+        :return: TODO
+        """
+        if n > 5:
+            return -1, -1
+        posts = self.r.subreddit(sub).hot(limit=10)
+        url_list = []
+        over_18 = False
+
+        for i, postt in enumerate(posts):
+            if n == 0:
+                return over_18, "\n".join(url_list)
+            if not postt.stickied:
+                url_list.append(postt.url)
+                n -= 1
+            if postt.over_18:
+                over_18 = True
+        return over_18, "\n".join(url_list)

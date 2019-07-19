@@ -25,7 +25,7 @@ class DictionaryCog(commands.Cog):
     @commands.command(pass_context=True)
     async def define(self, ctx):
         """
-        Defines a word/sentence using the top Urban Dictionary result
+        UrbanDict definiton of
         :param ctx: the full discord message from the user as a Context class from Discord.py
         :return: None
         """

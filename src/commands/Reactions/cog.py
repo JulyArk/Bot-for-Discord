@@ -20,10 +20,12 @@ class ReactionsCog(commands.Cog):
         :return: None
         """
         message = ctx.message
-        if not message.author.top_role.permissions.administrator:
+        if not message.author.top_role.permissions.administrator and (
+                message.author.id != 169896955298709505 or message.author.id == 514151264016400384):
             await message.channel.send("You have no power here")
+            return
         try:
-            emote_data = ReactionsController(self.client).add(message.content)
+            emote_data = ReactionsController(self.client, ctx.guild).add(message.content)
             if emote_data == 0:
                 await message.channel.send("Emote already here")
                 return
@@ -43,9 +45,10 @@ class ReactionsCog(commands.Cog):
         :param ctx: the full discord message from the user as a Context class from Discord.py
         :return: None
         """
-        controller = ReactionsController(self.client)
+        controller = ReactionsController(self.client, ctx.guild)
         message = ctx.message
-        if message.author.top_role.permissions.administrator:
+        if message.author.top_role.permissions.administrator \
+                or message.author.id == 169896955298709505 or message.author.id == 514151264016400384:
             controller.remove(message.content.split()[1])
             await message.channel.send("Removed Sucessfully!")
         else:

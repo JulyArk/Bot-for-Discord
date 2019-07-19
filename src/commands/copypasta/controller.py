@@ -7,11 +7,12 @@ class CopyPastaController:
     A controller for the CopyPasta Class
     """
 
-    def __init__(self):
+    def __init__(self, guild):
         """
         Loads the file
         """
-        self.pastas = CopyPastas(copypasta_file_path)
+        self.guild = guild
+        self.pastas = CopyPastas(copypasta_file_path + str(guild.id))
 
     def add(self, string: str):
         """
@@ -50,3 +51,10 @@ class CopyPastaController:
         :return: dictionary
         """
         return self.pastas.pasta_dict
+
+    def update_to_access_bits(self):
+        self.pastas.update_to_access_bits()
+
+    def set_bits(self, msg):
+        self.pastas.load_dict_from_file()
+        return self.pastas.set_bits_value(msg)

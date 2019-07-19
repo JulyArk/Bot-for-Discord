@@ -2,7 +2,6 @@ from discord.ext import commands
 from classified.bot_token.token import bot_token
 from src.commands.copypasta.EventFunction import copypasta_on_msg
 from src.commands.Reactions.EventFunction import react_to_msg
-from src.commands.BotMiscellaneous.Functions_wo_class import *
 
 client = commands.Bot(command_prefix=".")
 
@@ -26,15 +25,19 @@ async def on_disconnect():
 
 
 @client.event
+@commands.cooldown(1, 20)
 async def on_message(message):
     """
     Discord.py function. On message sent in any discord channel/server
     :param message: Message object from Discord.py
     :return: None
     """
+
     if message.author == client.user:
         return
-    log_chat("chatlogs", message)
+    # if message.author.id == 244573404059926529:
+    #     return
+    # log_chat("chatlogs", message)
 
     await react_to_msg(message, client)
     await copypasta_on_msg(message)
@@ -54,6 +57,7 @@ client.load_extension("src.commands.Dictionary.cog")
 client.load_extension("src.commands.Reactions.cog")
 client.load_extension("src.commands.copypasta.cog")
 client.load_extension("src.commands.DiscordVoice.cog")
+client.load_extension("src.commands.RateGirl.cog")
 client.run(bot_token)
 
 # DONE Create the class for reactions triggered by keywords
