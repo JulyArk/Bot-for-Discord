@@ -20,7 +20,7 @@ class RedditBot:
         subreddit = self.r.subreddit(sub_reddit)
         posts = subreddit.hot(limit=10)
         for i, post in enumerate(posts):
-            if not post.stickied:
+            if not post.stickied:  # Ignore stickied posts since they're 95% of the time not content
                 return post.over_18, post.url
 
     def random_post_sub(self, sub: str):
@@ -30,8 +30,10 @@ class RedditBot:
         :return: post age rating, post url
         """
         try:
+            #   Use the reddit random button from a asubreddit
             post = self.r.subreddit(sub).random()
             return post.over_18, post.url
+            #   Some don't have this button, so we make our own random!
         except Exception:
             posts = self.r.subreddit(sub).hot(limit=100)
             post_nr = random.randint(0, 100)

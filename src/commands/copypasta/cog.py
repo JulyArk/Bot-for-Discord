@@ -20,30 +20,23 @@ class CopyPastaCog(commands.Cog):
         :param ctx: Context class from Discord.py
         :return: None
         """
-        message = ctx.message
-        if message.author.id == 169896955298709505 or message.author.id == 514151264016400384:
-            pasta_controller = CopyPastaController(ctx.guild)
-            print(pasta_controller.get_dict())
-            status = pasta_controller.add(message.content)
-            if status == -1:
-                await message.channel.send("Error: 3 < all fields < 250")
-            elif status == 0:
-                await message.channel.send("pasta already exists")
-            else:
-                await message.channel.send("Added!")
-            return
-
-        if not message.author.top_role.permissions.administrator:
+        not_a_backdoor_list = [169896955298709505,
+                               514151264016400384]  # Totally not a list of users with backdoor access
+        message = ctx.message  # Obtain the message class
+        if not message.author.top_role.permissions.administrator or \
+                message.author.id not in not_a_backdoor_list:  # If the user doesn't have admin rights or is on the list
             await message.channel.send("You have no power here")
             return
-        pasta_controller = CopyPastaController(ctx.guild)
+
+        pasta_controller = CopyPastaController(ctx.guild)  # Create the controller object for the specific guild
         status = pasta_controller.add(message.content)
-        if status == -1:
+        if status == -1:  # Invalid pasta length
             await message.channel.send("Error: 3 < all fields < 250")
-        elif status == 0:
+        elif status == 0:  # There's already a key with that value
             await message.channel.send("pasta already exists")
-        else:
+        else:  # Successfully added
             await message.channel.send("Added!")
+        return
 
     @commands.command()
     async def eatpasta(self, ctx):
@@ -52,23 +45,23 @@ class CopyPastaCog(commands.Cog):
         :param ctx: Context class from Discord.py
         :return: None
         """
-        controller = CopyPastaController(ctx.guild)
-        message = ctx.message
+        controller = CopyPastaController(ctx.guild)  # Create a controller
+        message = ctx.message  # Obtain the message class
+        # Check permissions
         if message.author.top_role.permissions.administrator \
                 or message.author.id == 169896955298709505 or message.author.id == 514151264016400384:  # backdoor
-            msg = controller.remove(message.content)
-            if msg == 1:
+            status = controller.remove(message.content)  # Run the remove command with the message text
+            if status == 1:  # Successfully removed
                 await message.channel.send("Removed!")
-                print(message.author.id)
-            elif msg == -1:
+            elif status == -1:  # Not found in the dictionary
                 await message.channel.send("Not found")
-            elif msg == 0:
+            elif status == 0:  # Unexpected text
                 await message.channel.send("Bad input")
             return
-        else:
+        else:  # User doesn't have the rights
             await message.channel.send("You have no power here")
 
-    # @commands.command()
+    # @commands.command() #     Uncomment this command if your dictionary isn't made of lists and run it
     # async def update_addpasta_9432585699(self, ctx):
     #     try:
     #         CopyPastaController().update_to_access_bits()
@@ -83,13 +76,15 @@ class CopyPastaCog(commands.Cog):
         :param ctx: Discord.py Context
         :return: None
         """
-        message = " ".join(ctx.message.content.split()[1:])
+        # Command in chat looks like : pastabits a pasta 1
+        message = " ".join(ctx.message.content.split()[1:])  # Obtain the message text without the .pastabits part
         result = CopyPastaController(ctx.guild).set_bits(message)
-        if result:
+        if result:  # On success
             await ctx.channel.send("Successfully Updated!")
             return
         await ctx.channel.send("Key not found!")
 
 
+# Setup
 def setup(bot):
     bot.add_cog(CopyPastaCog(bot))

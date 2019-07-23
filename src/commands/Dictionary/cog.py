@@ -6,6 +6,7 @@ class DictionaryCog(commands.Cog):
     """
     Finds definitions from UrbanDictionary (mostly for internet slang)
     """
+
     def __init__(self, bot):
         """
         :param bot: commands.Bot

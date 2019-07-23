@@ -11,8 +11,8 @@ class CopyPastaController:
         """
         Loads the file
         """
-        self.guild = guild
-        self.pastas = CopyPastas(copypasta_file_path + str(guild.id))
+        self.guild = guild  # The discord channel
+        self.pastas = CopyPastas(copypasta_file_path + str(guild.id))  # The dictionary of copypastas read from file
 
     def add(self, string: str):
         """

@@ -9,10 +9,10 @@ async def react_to_msg(message, client):
     :param client: bot from commands.Bot
     :return: None
     """
-    reaction_controller = ReactionsController(client, message.guild)
+    reaction_controller = ReactionsController(client, message.guild)  # Create the controller
     # reaction_controller.react_dict.import_guild_reactions("reactions_pickle.txt") # if you need to import reacts
-    dict_r = reaction_controller.get_dict()
+    dict_r = reaction_controller.get_dict()  # Get the dictionary
     for key in dict_r:
-        if message.content.find(key) != -1:
+        if message.content.find(key) != -1:  # If the message is found in the text of the message add the reaction
             await message.add_reaction(client.get_emoji(dict_r[key]))
             return

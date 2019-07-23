@@ -16,8 +16,8 @@ class UrbanDictionary:
             r = requests.get("http://www.urbandictionary.com/define.php?term={}".format(word))  # goes to link for word
             soup = BeautifulSoup(r.content, features="html.parser")  # sets up soup
             def_header = "**" + soup.find("div", attrs={"class": "def-header"}).text.replace("unknown",
-                                                                                             "") + "**"  # header is the word we are defining
-            # def_header = def_header[0:len(def_header) - 10]  # header always ends in "unknown" this removes it
+                                                                                             "") + "**"
+            # header is the word we are defining
             meaning = soup.find("div", attrs={"class": "meaning"}).text  # gets the definition
             for x in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 meaning = meaning.replace(str(x) + ". ", "\n" + str(x) + ". ")
@@ -30,6 +30,7 @@ class UrbanDictionary:
             return output  # returns the word, defintion, and example
         except AttributeError:
             return "No results"
+
     # returns the word of the day from the homepage
     @staticmethod
     def word_of_the_day():
