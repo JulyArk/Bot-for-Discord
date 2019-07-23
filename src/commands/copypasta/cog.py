@@ -6,7 +6,7 @@ class CopyPastaCog(commands.Cog):
 
     def __init__(self, bot):
         self.client = bot
-        #self.controller = CopyPastaController(bot.ctx.guild)
+        # self.controller = CopyPastaController(bot.ctx.guild)
 
     @commands.command()
     async def addpasta(self, ctx):
@@ -78,6 +78,11 @@ class CopyPastaCog(commands.Cog):
 
     @commands.command()
     async def pastabits(self, ctx):
+        """
+        Changes if the trigger messages gets delete
+        :param ctx: Discord.py Context
+        :return: None
+        """
         message = " ".join(ctx.message.content.split()[1:])
         result = CopyPastaController(ctx.guild).set_bits(message)
         if result:

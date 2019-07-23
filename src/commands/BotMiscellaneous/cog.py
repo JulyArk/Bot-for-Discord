@@ -124,6 +124,20 @@ class MiscellaneousCog(commands.Cog):
         value = int(message.content.split()[1])
         await ctx.channel.purge(limit=value)
 
+    @staticmethod
+    def find_number_in_str(data: str):
+        """
+        Finds all the numbers in a string and returns them concatenated
+        Should only be used for Discord ID parsing !! It doesn't have much benefit besides that!
+        :param data: A string
+        :return: Integer, the number created
+        """
+        number = ""
+        for char in data:
+            if '0' <= char <= '9':
+                number += char
+        return int(number)
+
     @commands.command()
     async def hide(self, ctx):
         """
@@ -135,13 +149,17 @@ class MiscellaneousCog(commands.Cog):
         if not ctx.message.author.top_role.permissions.administrator:
             return
         user = ctx.message.content.split()[1]  # raw user string name or nickname
-        user_if_id = int(user[3:-1])  # user id if given by pinging
+
+        try:
+            user_if_id = MiscellaneousCog.find_number_in_str(user)  # user id if given by pinging
+        except ValueError:
+            user_if_id = -1
         value = int(ctx.message.content.split()[2])  # number of messages to be deleted
         counter = 0  # messages found
-        async for message in channel.history(limit=200):
+        async for message in channel.history(limit=500):
             if counter == value:
                 return
-            if message.author.nick == user or message.author.name == user or message.author.id == user_if_id:
+            if message.author.name == user or message.author.id == user_if_id:
                 await message.delete()
                 counter += 1
 
