@@ -4,30 +4,30 @@ In order to run the bot you will need to generate a discord bot token as well as
 Discord bot token: https://github.com/Chikachi/DiscordIntegration/wiki/How-to-get-a-token-and-channel-ID-for-Discord       
 Reddit API info: https://stackoverflow.com/a/42304034      
 Commands:
-CopyPasta = Bot responds to keywords by posting a message
-  addpasta  Add response to keyword
-  eatpasta  Removes one of the copypastas
-  pastabits Changes if the trigger messages gets deleted 
-Dictionary = Parsing trough urban dictionary
-  define    UrbanDict definiton of a certain word
-  wotd      Word of the day on UrbanDictionary
-DiscordBotVoice = Supposed to play music but it'll be added later
-  join      Bot joins the voice channel the user is in
-  leave     Bot leaves voice
-DiscordRateGirl (BETA) = Generates 2 PRNG values that stay consistent depending on day
-  rategirl  Rates @User by 2 values, Hot and Crazy 
-Miscellaneous = For filler commands that don't deserve their own class
-  avm       Print avatar of pinged User
-  badbot    Same as goodbot
-  changelog 
-  cm        Turns cm (height) to ft + inch (metric to imperial) by approximation
-  dice      Rolls 2 dice ( returns 2 values between 1-6)
-  erase     Erase N messages (admin only)
-  ft        Turns height ft.inch (Eg: 5.11) to cm (imperial to metric)
-  gimg      Searcher for a random image from google
-  goodbot   Filler command. Bot sends a message on call.
-  hide      Removes the messages of a user from a channel
-  kg        Turn kg into lb (metric to imperial)
+CopyPasta = Bot responds to keywords by posting a message    
+  addpasta  Add response to keyword    
+  eatpasta  Removes one of the copypastas   
+  pastabits Changes if the trigger messages gets deleted    
+Dictionary = Parsing trough urban dictionary   
+  define    UrbanDict definiton of a certain word   
+  wotd      Word of the day on UrbanDictionary   
+DiscordBotVoice = Supposed to play music but it'll be added later   
+  join      Bot joins the voice channel the user is in   
+  leave     Bot leaves voice   
+DiscordRateGirl (BETA) = Generates 2 PRNG values that stay consistent depending on day   
+  rategirl  Rates @User by 2 values, Hot and Crazy    
+Miscellaneous = For filler commands that don't deserve their own class   
+  avm       Print avatar of pinged User   
+  badbot    Same as goodbot   
+  changelog    
+  cm        Turns cm (height) to ft + inch (metric to imperial) by approximation   
+  dice      Rolls 2 dice ( returns 2 values between 1-6)   
+  erase     Erase N messages (admin only)   
+  ft        Turns height ft.inch (Eg: 5.11) to cm (imperial to metric)   
+  gimg      Searcher for a random image from google      
+  goodbot   Filler command. Bot sends a message on call.   
+  hide      Removes the messages of a user from a channel   
+  kg        Turn kg into lb (metric to imperial)   
   killbot   Turns the bot off (admin only)
   lb        Turn lb into kg (imperial to metric)
 Reactions = Bot adds a reaction to a message that contains certain keywords
