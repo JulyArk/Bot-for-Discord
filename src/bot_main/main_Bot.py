@@ -1,6 +1,6 @@
 from discord.ext import commands
 from classified.bot_token.token import bot_token
-from src.commands.copypasta.EventFunction import copypasta_on_msg
+from src.commands.copypasta.EventFunction import copypasta_on_msg, blacklistCheck
 from src.commands.Reactions.EventFunction import react_to_msg
 
 client = commands.Bot(command_prefix=".")
@@ -25,27 +25,27 @@ async def on_disconnect():
 
 
 @client.event
-@commands.cooldown(1, 20)
+@commands.cooldown(1, 2)
 async def on_message(message):
     """
     Discord.py function. On message sent in any discord channel/server
     :param message: Message object from Discord.py
     :return: None
     """
-
     if message.author == client.user:
         return
+    # if message.author.id != 169896955298709505:
+    #     return
     # if message.author.id == 244573404059926529:
     #     return
     # log_chat("chatlogs", message)
-
-    await react_to_msg(message, client)
-    await copypasta_on_msg(message)
-
     # if message.content.lower().startswith('hello') or message.content.lower().startswith("hey"):
     #     await message.channel.send('Hello {} !'.format(message.author.mention))
     #     return
     await client.process_commands(message)
+    await react_to_msg(message, client)
+    await copypasta_on_msg(message)
+    await blacklistCheck(message)
 
 
 # LOAD COGS
@@ -58,6 +58,7 @@ client.load_extension("src.commands.Reactions.cog")
 client.load_extension("src.commands.copypasta.cog")
 client.load_extension("src.commands.DiscordVoice.cog")
 client.load_extension("src.commands.RateGirl.cog")
+client.load_extension("src.commands.Blacklist.cog")
 client.run(bot_token)
 
 # DONE Create the class for reactions triggered by keywords

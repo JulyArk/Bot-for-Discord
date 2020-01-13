@@ -84,6 +84,21 @@ class CopyPastas:
         self.pasta_dict[key] = [pasta, bits]  # Add it to dictionary
         return 1
 
+    def removeSauce(self, key: str):
+        key = key.split()  # Split the message text obtained into a list of words
+        key.pop(0)  # Remove the command part (.eatpasta)
+        key = " ".join(key)  # Create the full key in a string
+        print(key)
+        # self.pasta_dict.pop('<:Worry:583048917910814750>')
+        # self.pasta_dict.pop('<:PepeWhip:582391831690739720>')
+        for value in self.pasta_dict:
+            if self.pasta_dict[value][0] == key:
+                print(self.pasta_dict[value][0])  # Remove the copypasta
+                self.pasta_dict.pop([value][0])
+
+                return 1
+        return -1
+
     def remove_pasta(self, key: str):
         """
         Removes a copypasta

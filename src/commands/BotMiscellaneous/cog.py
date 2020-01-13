@@ -10,6 +10,9 @@ import os
 import argparse
 import sys
 import json
+import time
+
+votekick_on = 0
 
 
 class MiscellaneousCog(commands.Cog):
@@ -51,7 +54,7 @@ class MiscellaneousCog(commands.Cog):
         """
         value = float(ctx.message.content.split()[1])
         lb = int(value)
-        inch = (value - int(value)) * 100
+        inch = (value - int(value)) * 10
         cm = lb * 30.48 + inch * 2.54
         print(lb, inch)
         await ctx.channel.send("That is {0:.2f} cm".format(cm))
@@ -110,6 +113,66 @@ class MiscellaneousCog(commands.Cog):
         await message.channel.send(self.client.get_emoji(521430122503471114))
         await message.channel.send(self.client.get_emoji(521430137724731392))
 
+    @staticmethod
+    def verify_vote(vote_list, new_vote):
+        if new_vote not in vote_list:
+            return True
+        return False
+
+    @commands.command()
+    async def votekick(self, ctx):
+        """
+        Starts a votekick for a certain user, needs 51% votes
+        :param ctx: Context
+        :return: None
+        """
+        global votekick_on
+        if votekick_on == 1:
+            await ctx.channel.send("A votekick is already open")
+            return
+        votekick_on = 1
+        voted = []  # list of user ID's that voted
+        message = ctx.message  # message string
+        user = message.content.split()[1]  # user mention
+        votes_needed = 9  # int(len(message.guild.members) / 2 + 1)
+        current_votes = 0
+        await ctx.message.channel.send(
+            "Starting a votekick for user {}."
+            " Type \"vote yes\" or \"vote no\" \n"
+            "Votes needed:({}/{}) "
+                .format(user, current_votes, votes_needed))
+        bot_message = None
+        async for message in ctx.channel.history(limit=50):
+            if message.author.name == "Iku-nee":
+                bot_message = message
+                break
+        timer = 60
+        current_timer = 0
+        while current_timer < timer:
+            time.sleep(1)
+            async for message in ctx.channel.history(limit=50):
+                if message.content == "vote yes":
+                    if MiscellaneousCog.verify_vote(voted, message.author.id):
+                        current_votes += 1
+                        voted.append(message.author.id)
+
+                    await bot_message.edit(
+                        content="Starting a votekick for user {}."
+                                " Type \"vote yes\" or \"vote no\" \n"
+                                "Votes needed:({}/{})"
+                            .format(user, current_votes, votes_needed))
+                    await message.delete()
+                elif message.content == "vote no":
+                    voted.append(message.author.id)
+                    await message.delete()
+
+            current_timer += 1
+        if current_votes >= votes_needed:
+            await ctx.channel.send("The senate decision is exile, begone {}!".format(user))
+        else:
+            await ctx.channel.send("The senate spares {}".format(user))
+        votekick_on = 0
+
     @commands.command()
     async def erase(self, ctx):
         """
@@ -136,7 +199,42 @@ class MiscellaneousCog(commands.Cog):
         for char in data:
             if '0' <= char <= '9':
                 number += char
-        return int(number)
+        try:
+            return int(number)
+        except ValueError:
+            return -1
+
+    @commands.command()
+    async def al(self, ctx):
+        character = ctx.message.content.split()[1:]
+        character = [word.lower().capitalize() if word.lower() != 'of' else word.lower() for word in character]
+        await ctx.channel.send("https://azurlane.koumakan.jp/" + '_'.join(character))
+
+    @commands.command()
+    async def alwho(self, ctx):
+        #   TODO proper web scraping
+        character = ctx.message.content.split()[1:]
+        character = [word.lower().capitalize() if word.lower() != 'of' else word.lower() for word in character]
+        await ctx.channel.send(
+            "https://azurlane.koumakan.jp/{}#/media/File:{}.png".format('_'.join(character), '_'.join(character)))
+
+    @staticmethod
+    def findAllNumbersInString(data: str):
+        numberList = []
+        number = ""
+        for char in data:
+            if '0' <= char <= '9':
+                number += char
+            elif number != "":
+                numberList.append(int(number))
+                number = ""
+        if number != "":
+            numberList.append(int(number))
+            number = ""
+        try:
+            return numberList
+        except ValueError:
+            return -1
 
     @commands.command()
     async def hide(self, ctx):
@@ -170,7 +268,7 @@ class MiscellaneousCog(commands.Cog):
         :param ctx: Discord.py Context
         :return: None
         """
-        author_id = int(ctx.message.content.split()[1][3:-1])
+        author_id = self.find_number_in_str(ctx.message.content)
         for author in ctx.guild.members:
             if author.id == author_id:
                 await ctx.channel.send(author.avatar_url)
@@ -182,6 +280,7 @@ class MiscellaneousCog(commands.Cog):
         :param ctx:
         :return:
         """
+
         text = " ".join(ctx.message.content.split()[1:])
         print(text)
         parser = argparse.ArgumentParser(description='Scrape Google images')
@@ -189,7 +288,10 @@ class MiscellaneousCog(commands.Cog):
         parser.add_argument('-n', '--num_images', default=2, type=int, help='num images to save')
         parser.add_argument('-d', '--directory', default='/Users/gene/Downloads/', type=str, help='save directory')
         args = parser.parse_args()
+        print(args)
+        print(parser.description)
         query = args.search  # raw_input(args.search)
+        print(query)
         # max_images = args.num_images
         # save_directory = args.directory
         # image_type = "Action"
@@ -205,7 +307,8 @@ class MiscellaneousCog(commands.Cog):
             link, Type = json.loads(a.text)["ou"], json.loads(a.text)["ity"]
             ActualImages.append((link, Type))
         # await ctx.channel.send(random.choice(ActualImages)[0])
-        await ctx.channel.send(ActualImages[0][0])
+        print(len(ActualImages))
+        await ctx.channel.send(ActualImages[random.randint(0, len(ActualImages))][0])
     # @commands.command()
     # @commands.cooldown(1, 60)
     # async def com(self, ctx):

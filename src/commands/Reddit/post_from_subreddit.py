@@ -73,7 +73,7 @@ class RedditBot:
         :param sub: the subreddit, string
         :return: TODO
         """
-        if n > 5:
+        if n > 500:
             return -1, -1
         posts = self.r.subreddit(sub).hot(limit=10)
         url_list = []

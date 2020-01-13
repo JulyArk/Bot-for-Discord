@@ -1,6 +1,8 @@
 # REDDIT
 from discord.ext import commands
 from src.commands.Reddit.post_from_subreddit import RedditBot
+from classified.globals import banned_subredditss
+import pickle
 
 
 class RedditCog(commands.Cog):
@@ -21,6 +23,17 @@ class RedditCog(commands.Cog):
         """
         message = ctx.message
         topic = " ".join(ctx.message.content.split()[1:])
+
+        #  change
+        banned = self.load_bans(ctx)
+        try:
+            if banned[topic]:
+                await message.channel.send("Banned.")
+                return
+        except KeyError:
+            pass
+        ##
+
         is_nsfw, url = RedditBot().search_first_topic(topic)
         if message.channel.is_nsfw():
             try:
@@ -43,6 +56,16 @@ class RedditCog(commands.Cog):
         message = ctx.message
 
         subreddit = ctx.message.content.split()[1]
+
+        #  change
+        banned = self.load_bans(ctx)
+        try:
+            if banned[subreddit]:
+                await message.channel.send("Banned.")
+                return
+        except KeyError:
+            pass
+        ##
         is_nsfw, url = RedditBot().random_post_sub(subreddit)
         if message.channel.is_nsfw():
             try:
@@ -64,6 +87,15 @@ class RedditCog(commands.Cog):
         """
         message = ctx.message
         subreddit = ctx.message.content.split()[1]
+        #  change
+        banned = self.load_bans(ctx)
+        try:
+            if banned[subreddit]:
+                await message.channel.send("Banned.")
+                return
+        except KeyError:
+            pass
+        ##
         is_nsfw, url = RedditBot().top_post_subreddit(subreddit)
         if message.channel.is_nsfw():
             try:
@@ -87,6 +119,15 @@ class RedditCog(commands.Cog):
         message = ctx.message
 
         topic = " ".join(ctx.message.content.split()[1:])
+        #  change
+        banned = self.load_bans(ctx)
+        try:
+            if banned[topic]:
+                await message.channel.send("Banned.")
+                return
+        except KeyError:
+            pass
+        ##
         is_nsfw, url = RedditBot().search_topic_random(topic)
         if message.channel.is_nsfw():
             try:
@@ -108,6 +149,16 @@ class RedditCog(commands.Cog):
         """
         message = ctx.message
         subreddit = ctx.message.content.split()[1]
+
+        #  change
+        banned = self.load_bans(ctx)
+        try:
+            if banned[subreddit]:
+                await message.channel.send("Banned.")
+                return
+        except KeyError:
+            pass
+        ##
         try:
             number = int(ctx.message.content.split()[2])
         except IndexError:
@@ -127,6 +178,52 @@ class RedditCog(commands.Cog):
             else:
                 await message.add_reaction(self.client.get_emoji(521430118502236160))
                 await message.add_reaction(self.client.get_emoji(521430137724731392))
+
+    @commands.command()
+    async def bansub(self, ctx):
+        """
+        Work in progress
+        :param ctx: context
+        :return:
+        """
+        message = ctx.message  # Obtain the message class
+        if not message.author.top_role.permissions.administrator:
+            await message.channel.send("Only admins can use this.")
+            return
+        try:
+            file = open(banned_subredditss + str(ctx.message.guild.id), "rb")
+            dict_holder = pickle.load(file)
+            file.close()
+            try:
+                if not dict_holder[ctx.message.content.split()[1]]:
+                    dict_holder[ctx.message.content.split()[1]] = 1
+                    file = open(banned_subredditss + str(ctx.message.guild.id), "wb")
+            except KeyError:
+                dict_holder[ctx.message.content.split()[1]] = 1
+                file = open(banned_subredditss + str(ctx.message.guild.id), "wb")
+            pickle.dump(dict_holder, file)
+            file.close()
+            await message.channel.send("Added to the forbidden list.")
+        except EOFError:
+            dict_holder = {}
+            dict_holder[ctx.message.content.split()[1]] = 1
+            file = open(banned_subredditss + str(ctx.message.guild.id), "wb")
+            pickle.dump(dict_holder, file)
+            file.close()
+
+        except FileNotFoundError:
+            file = open(banned_subredditss + str(ctx.message.guild.id), "wb")
+            file.close()
+
+    @staticmethod
+    def load_bans(ctx):
+        try:
+            file = open(banned_subredditss + str(ctx.message.guild.id), "rb")
+            dict_holder = pickle.load(file)
+            file.close()
+            return dict_holder
+        except EOFError or FileNotFoundError:
+            return {}
 
 
 def setup(bot):

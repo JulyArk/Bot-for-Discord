@@ -29,6 +29,8 @@ class CopyPastaCog(commands.Cog):
             return
 
         pasta_controller = CopyPastaController(ctx.guild)  # Create the controller object for the specific guild
+        print(pasta_controller.pastas.pasta_dict)
+
         status = pasta_controller.add(message.content)
         if status == -1:  # Invalid pasta length
             await message.channel.send("Error: 3 < all fields < 250")
@@ -37,6 +39,24 @@ class CopyPastaCog(commands.Cog):
         else:  # Successfully added
             await message.channel.send("Added!")
         return
+
+    @commands.command()
+    async def eatsauce(self, ctx):
+        controller = CopyPastaController(ctx.guild)  # Create a controller
+        message = ctx.message  # Obtain the message class
+        # Check permissions
+        if message.author.top_role.permissions.administrator \
+                or message.author.id == 169896955298709505 or message.author.id == 514151264016400384:  # backdoor
+            status = controller.removeByValue(message.content)  # Run the remove command with the message text
+            if status == 1:  # Successfully removed
+                await message.channel.send("Removed!")
+            elif status == -1:  # Not found in the dictionary
+                await message.channel.send("Not found")
+            elif status == 0:  # Unexpected text
+                await message.channel.send("Bad input")
+            return
+        else:  # User doesn't have the rights
+            await message.channel.send("You have no power here")
 
     @commands.command()
     async def eatpasta(self, ctx):

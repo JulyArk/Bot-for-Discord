@@ -45,6 +45,13 @@ class CopyPastaController:
         self.pastas.save_dict_to_file()
         return status
 
+    def removeByValue(self, key):
+        status = self.pastas.removeSauce(
+            key)
+        self.pastas.save_dict_to_file()
+        return status
+
+    # if that then do this
     def get_dict(self):
         """
         Returns the dictionary of copypastas
